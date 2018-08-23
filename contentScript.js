@@ -6,7 +6,7 @@ function renderModal(paragraphText) {
     paragraphText
     +"</p> \
       <h3 class='cpe_modal_title'>YOUR COMMENT</h3> \
-      <form> \
+      <form id='cpe_form'> \
         <textarea class='cpe_modal_textarea' placeholder='What did you think of this section?'></textarea> \
         <input type='submit' value='SUBMIT' class='cpe_modal_submission'/> \
       </form> \
@@ -18,22 +18,27 @@ function renderModal(paragraphText) {
       $(".cpe_overlay").remove();
     }
   });
+
+  $("#cpe_form").on("submit", function(e) {
+    e.preventDefault();
+    highlightedText(paragraphText);
+    $(".cpe_overlay").remove();
+  })
+}
+
+function highlightedText(text) {
+  var instance = new Mark(document.querySelector("body"));
+  $("body").mark(text, {
+    separateWordSearch: false,
+    acrossElements: true,
+    className: "cpe_highlight"
+  });
 }
 
 $(document).ready(function() {
-  var instance = new Mark(document.querySelector("body"));
-
   $(document).bind('keypress', function(event) {
     if (event.which === 11 ) {
-      var highlightedText = window.getSelection().toString();
-      var instance = new Mark(document.querySelector("body"));
-
-      $("body").mark(highlightedText, {
-        separateWordSearch: false,
-        acrossElements: true,
-        className: "cpe_highlight"
-      });
-      renderModal(highlightedText)
+      renderModal(window.getSelection(0).toString())
     }
   });
 });

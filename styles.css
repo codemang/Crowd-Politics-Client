@@ -7,6 +7,9 @@
   right: 0;
   background-color: #0c0c0cc9;
   z-index: 100;
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+  box-sizing: border-box;         /* Opera/IE 8+ */
 }
 
 .cpe_container {
@@ -25,6 +28,8 @@
 }
 .cpe_modal_body {
   margin-bottom: 20px;
+  line-height: 25px;
+  font-size: 14px;
 }
 
 .cpe_modal_textarea {
@@ -34,6 +39,10 @@
   height: 100px;
   resize: none;
   padding: 5px 10px;
+  font-size: 14px;
+  t-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+  box-sizing: border-box;         /* Opera/IE 8+ */
 }
 
 .cpe_modal_submission {
@@ -43,6 +52,7 @@
   border: 0;
   padding: 5px 15px;
   margin-top: 5px;
+  font-size: 14px;
 }
 
 mark, .cpe_highlight {
