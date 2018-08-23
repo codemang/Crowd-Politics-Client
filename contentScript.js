@@ -21,24 +21,45 @@ function renderModal(paragraphText) {
 
   $("#cpe_form").on("submit", function(e) {
     e.preventDefault();
-    highlightedText(paragraphText);
-    $(".cpe_overlay").remove();
+
+    var data = {
+      highlightedText: paragraphText,
+      url: window.location.host + window.location.pathname,
+      comment: $(".cpe_modal_textarea")[0].value,
+      type: 'post_highlight',
+    }
+
+    chrome.runtime.sendMessage(data, function(highlight) {
+      highlightText(paragraphText, highlight.id);
+      $(".cpe_overlay").remove();
+    });
   })
 }
 
-function highlightedText(text) {
+function highlightText(text, highlight_id) {
   var instance = new Mark(document.querySelector("body"));
   $("body").mark(text, {
     separateWordSearch: false,
     acrossElements: true,
-    className: "cpe_highlight"
+    className: "cpe_highlight cpe_highlight_" + highlight_id
   });
 }
 
 $(document).ready(function() {
+  var message = {
+    type: 'load_highlights',
+    url: window.location.host + window.location.pathname
+  }
+  chrome.runtime.sendMessage(message, function(response) {
+    response.response.highlights.forEach(function(highlight) {
+      highlightText(highlight.body, highlight.id)
+    })
+  });
+
   $(document).bind('keypress', function(event) {
     if (event.which === 11 ) {
-      renderModal(window.getSelection(0).toString())
+      var highlightedText = window.getSelection(0).toString();
+      renderModal(highlightedText)
     }
   });
 });

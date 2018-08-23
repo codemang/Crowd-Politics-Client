@@ -5,12 +5,16 @@
   "manifest_version": 2,
   "permissions": [
     "activeTab"
-  ],
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "css": ["styles.css"],
-      "js": ["jquery.js", "mark.js", "contentScript.js"]
-    }
+   ],
+   "background": {
+    "scripts": ["jquery.js", "background.js"],
+    "persistent": false
+   },
+   "content_scripts": [
+     {
+       "matches": ["<all_urls>"],
+       "css": ["styles.css"],
+       "js": ["jquery.js", "mark.js", "contentScript.js"]
+     }
   ]
 }
