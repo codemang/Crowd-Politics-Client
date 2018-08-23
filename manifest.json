@@ -9,7 +9,8 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["jquery.js", "contentScript.js"]
+      "css": ["styles.css"],
+      "js": ["jquery.js", "mark.js", "contentScript.js"]
     }
   ]
 }
