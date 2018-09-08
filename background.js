@@ -11,7 +11,7 @@ chrome.runtime.onMessage.addListener(
         data: Object.assign({}, data, {username: username}),
       })
       .done(function(data) {
-        sendResponse({response: data.response})
+        sendResponse({response: data.highlight})
       })
       .fail(function() {
         console.log( "error!!!" );

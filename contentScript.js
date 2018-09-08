@@ -2,7 +2,6 @@ var globalHighlights = {}
 
 function renderModal(highlightedObj) {
   var highlightedText = highlightedObj.highlightedText || globalHighlights[highlightedObj.highlightId].body;
-  console.log(highlightedText);
   $("body").prepend("<div class='cpe_overlay'> \
     <div class='cpe_container'> \
       <h3 class='cpe_modal_title'>SELECTED TEXT</h3> \
@@ -35,6 +34,9 @@ function renderModal(highlightedObj) {
     }
 
     chrome.runtime.sendMessage(data, function(highlight) {
+      // TODO: Where is this response key coming from?
+      highlight = highlight.response;
+      globalHighlights[highlight.id] = highlight;
       highlightText(highlightedText, highlight.id);
       $(".cpe_overlay").remove();
     });
@@ -92,7 +94,6 @@ function showComments(highlightId) {
 }
 
 $(document).ready(function() {
-  console.log(111111111111)
   var message = {
     type: 'load_highlights',
     url: window.location.host + window.location.pathname
