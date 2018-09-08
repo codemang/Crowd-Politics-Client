@@ -14,7 +14,7 @@
      {
        "matches": ["<all_urls>"],
        "css": ["styles.css"],
-       "js": ["jquery.js", "mark.js", "contentScript.js"]
+       "js": ["jquery.js", "jquery.min.js", "mark.js", "linkify.min.js", "linkify-jquery.min.js", "contentScript.js"]
      }
   ]
 }

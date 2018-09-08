@@ -65,3 +65,10 @@ mark:hover, .cpe_highlight:hover {
   background: #ffab91;
   cursor: pointer;
 }
+
+.cpe_comment_container {
+  border: 1px solid #dadada;
+  border-radius: 3px;
+  margin-bottom: 10px;
+  padding: 10px;
+}

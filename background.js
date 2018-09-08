@@ -1,9 +1,10 @@
 chrome.runtime.onMessage.addListener(
   function(data, sender, sendResponse) {
+    var backend = 'natemango.com';
     if (data.type === 'post_highlight') {
       $.ajax({
         type: "POST",
-        url: 'http://localhost:3000/api/highlights',
+        url: 'http://'+backend+'/api/highlights',
         data: data,
       })
       .done(function(data) {
@@ -18,10 +19,11 @@ chrome.runtime.onMessage.addListener(
     } else if (data.type === 'load_highlights') {
       $.ajax({
         type: "GET",
-        url: 'http://localhost:3000/api/highlights',
+        url: 'http://'+backend+'/api/highlights',
         data: data,
       })
       .done(function(data) {
+        console.log(data)
         sendResponse({response: data.response})
       })
       .fail(function() {
