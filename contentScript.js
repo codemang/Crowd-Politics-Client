@@ -58,12 +58,11 @@ function highlightText(text, highlightId) {
 }
 
 function showComments(highlightId) {
-  console.log("showing comments ");
-  console.log(globalHighlights[highlightId]);
-
   var commentsHtml = ""
   $.each(globalHighlights[highlightId].comments, function(index, elm) {
-    commentsHtml += "<div class='cpe_comment_container'>"+elm.comment+"</div>";
+    commentsHtml += "<div class='cpe_comment_container'> \
+      <div class='cpe_comment_username'>" + elm.username + "</div> \
+      <div class='cpe_comment_body'>"+elm.comment + "</div></div>";
   });
 
   $("body").prepend("<div class='cpe_overlay'> \

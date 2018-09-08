@@ -71,4 +71,9 @@ mark:hover, .cpe_highlight:hover {
   border-radius: 3px;
   margin-bottom: 10px;
   padding: 10px;
+  margin-top: 10px;
+}
+.cpe_comment_username {
+  font-weight: 700;
+  margin-bottom: 10px;
 }

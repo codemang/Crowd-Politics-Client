@@ -1,11 +1,14 @@
 chrome.runtime.onMessage.addListener(
   function(data, sender, sendResponse) {
-    var backend = 'natemango.com';
+    // var backend = 'natemango.com';
+    var backend = 'localhost:3000';
+    var username = 'Nate R.'
+
     if (data.type === 'post_highlight') {
       $.ajax({
         type: "POST",
         url: 'http://'+backend+'/api/highlights',
-        data: data,
+        data: Object.assign({}, data, {username: username}),
       })
       .done(function(data) {
         sendResponse({response: data.response})
@@ -20,7 +23,7 @@ chrome.runtime.onMessage.addListener(
       $.ajax({
         type: "GET",
         url: 'http://'+backend+'/api/highlights',
-        data: data,
+        data: Object.assign({}, data, {username: username}),
       })
       .done(function(data) {
         console.log(data)
