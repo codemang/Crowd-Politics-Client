@@ -27,6 +27,7 @@ function renderModal(highlightedObj) {
 
     var data = {
       highlightedText: highlightedText,
+      articleTitle: getArticleTitle(),
       highlightedId: highlightedObj.highlightId,
       url: window.location.host + window.location.pathname,
       comment: $(".cpe_modal_textarea")[0].value,
@@ -41,6 +42,16 @@ function renderModal(highlightedObj) {
       $(".cpe_overlay").remove();
     });
   })
+}
+
+function getArticleTitle() {
+  if (window.location.host.indexOf('nationalreview') !== -1) {
+    return $("h1.article-header__title").text().trim();
+  } else if (window.location.host.indexOf('nytimes') !== -1) {
+    return $("span.balancedHeadline").text().trim();
+  } else if (window.location.host.indexOf('vox') !== -1) {
+    return $("h1.c-page-title").text().trim();
+  }
 }
 
 function highlightText(text, highlightId) {
