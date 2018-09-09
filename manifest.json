@@ -7,14 +7,26 @@
     "activeTab"
    ],
    "background": {
-    "scripts": ["jquery.js", "background.js"],
+    "scripts": ["vendor-js/jquery.js", "background.js"],
     "persistent": false
    },
    "content_scripts": [
      {
        "matches": ["<all_urls>"],
-       "css": ["styles.css"],
-       "js": ["jquery.js", "jquery.min.js", "mark.js", "linkify.min.js", "linkify-jquery.min.js", "contentScript.js"]
+       "css": [
+         "vendor-css/jquery-comments.css",
+         "vendor-css/font-awesome.min.css",
+         "styles.css"
+       ],
+       "js": [
+         "vendor-js/jquery.js",
+         "vendor-js/jquery.min.js",
+         "vendor-js/mark.js",
+         "vendor-js/linkify.min.js",
+         "vendor-js/linkify-jquery.min.js",
+         "vendor-js/jquery-comments.js",
+         "contentScript.js"
+       ]
      }
   ]
 }
