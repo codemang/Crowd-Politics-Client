@@ -51,6 +51,12 @@ function getArticleTitle() {
     return $("span.balancedHeadline").text().trim();
   } else if (window.location.host.indexOf('vox') !== -1) {
     return $("h1.c-page-title").text().trim();
+  } else if (window.location.host.indexOf('thefederalist') !== -1) {
+    return $("h2.entry-title a").text().trim();
+  } else if (window.location.host.indexOf('salon') !== -1) {
+    return $(".title-container h1").text().trim();
+  } else if (window.location.host.indexOf('washingtonpost') !== -1) {
+    return $(".topper-headline h1").text().trim();
   }
 }
 
