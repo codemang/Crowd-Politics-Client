@@ -16,7 +16,8 @@
        "css": [
          "vendor-css/jquery-comments.css",
          "vendor-css/font-awesome.min.css",
-         "styles.css"
+         "styles.css",
+         "build/css/main.css"
        ],
        "js": [
          "vendor-js/jquery.js",
@@ -25,7 +26,8 @@
          "vendor-js/linkify.min.js",
          "vendor-js/linkify-jquery.min.js",
          "vendor-js/jquery-comments.js",
-         "contentScript.js"
+         "contentScript.js",
+         "build/js/main.js"
        ]
      }
   ]
