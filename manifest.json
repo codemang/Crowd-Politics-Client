@@ -15,8 +15,6 @@
        "matches": ["<all_urls>"],
        "css": [
          "vendor-css/jquery-comments.css",
-         "vendor-css/font-awesome.min.css",
-         "styles.css",
          "build/css/main.css"
        ],
        "js": [
@@ -26,6 +24,7 @@
          "vendor-js/linkify.min.js",
          "vendor-js/linkify-jquery.min.js",
          "vendor-js/jquery-comments.js",
+         "vendor-js/fontawesome.js",
          "contentScript.js",
          "build/js/main.js"
        ]

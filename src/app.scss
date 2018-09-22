@@ -1,0 +1,53 @@
+.cpe-sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  transition: right 0.3s;
+  right: -500px;
+  width: 500px;
+  background: #fafafa;
+  border-left: 1px solid rgba(0,0,0,.07);
+  z-index: 10000;
+  padding: 20px;
+  box-shadow: 0 0 4px 1px rgba(154, 154, 154, 0.3);
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+  box-sizing: border-box;         /* Opera/IE 8+ */
+}
+
+
+.cpe-sidebar-visible {
+  right: 0;
+}
+.cpe-panel-highlighted-text {
+  line-height: 23px;
+  margin-bottom: 33px;
+}
+.cpe-panel-highlighted-header {
+  font-size: 21px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.cpe-close-button {
+  margin-bottom: 30px;
+  display: inline-block;
+}
+
+mark, .cpe_highlight {
+  background: #ffbba7;
+  padding: 0;
+  padding: 0;
+  border-radius: 3px;
+}
+mark:hover, .cpe_highlight:hover {
+  background: #ffab91;
+  cursor: pointer;
+}
+#cpe-modal-container {
+  overflow: scroll;
+  z-index: 100000000;
+}
+.panel-header {
+  position: fixed
+}
