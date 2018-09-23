@@ -8,7 +8,6 @@
   background: #fafafa;
   border-left: 1px solid rgba(0,0,0,.07);
   z-index: 10000;
-  padding: 20px;
   box-shadow: 0 0 4px 1px rgba(154, 154, 154, 0.3);
   -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
   -moz-box-sizing: border-box;    /* Firefox, other Gecko */
@@ -21,7 +20,11 @@
 }
 .cpe-panel-highlighted-text {
   line-height: 23px;
-  margin-bottom: 33px;
+  margin-bottom: 0;
+  display: inline-block;
+  background: rgb(255, 232, 225);
+  border-radius: 5px;
+  padding: 8px;
 }
 .cpe-panel-highlighted-header {
   font-size: 21px;
@@ -45,9 +48,38 @@ mark:hover, .cpe_highlight:hover {
   cursor: pointer;
 }
 #cpe-modal-container {
-  overflow: scroll;
   z-index: 100000000;
+  overflow: scroll;
 }
+.panel-header-shared {
+  padding: 20px;
+}
+
 .panel-header {
-  position: fixed
+  background: #263238;
+  overflow: auto;
+  padding: 10px 20px;
+}
+.panel-highlight {
+  background-color: white;
+  border-bottom: 1px solid gainsboro;
+}
+.fa.fa-user.profile-picture {
+  display: none !important;
+}
+.panel-header-brand {
+  float: left;
+  font-size: 28px;
+  font-weight: 100;
+  margin-bottom: 0;
+  color: white;
+}
+.panel-header-close {
+  float: right;
+  margin-top: 9px;
+  color: gainsboro;
+}
+.panel-header-close:hover {
+  color: white;
+  cursor: pointer;
 }

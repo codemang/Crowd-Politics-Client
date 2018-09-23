@@ -90,6 +90,7 @@ class App extends Component {
     const reactRef = this;
     if (!this.state.panelVisible && this.state.panelVisible != nextState.panelVisible) {
       $('#comments-container').comments({
+        enablePinging: false,
         profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/public/defaults/user-icon.png',
         getComments: function(success, error) {
           if (!nextState.highlightedData || !nextState.highlightedData.highlightId) {
@@ -154,13 +155,20 @@ class App extends Component {
 
     return (
       <div id={style['cpe-modal-container']} className={classes}>
-        <div className={style['panel-header']}>
-          <a onClick={this.closePanel.bind(this)}>Close Panel</a>
+        <div className={`${style['panel-header']} ${style['panel-header-shared']}`}>
+          <p className={style['panel-header-brand']}>PolitiCrew</p>
+          <a className={style['panel-header-close']} onClick={this.closePanel.bind(this)}>Close</a>
         </div>
-        <h3 className={style['cpe-panel-highlighted-header']}>HIGHLIGHTED TEXT</h3>
-        <p className={style['cpe-panel-highlighted-text']}>{"\""+highlightedText+"\""}</p>
-        <h3 className={style['cpe-panel-highlighted-header']}>COMMENT SECTION</h3>
-        <div id='comments-container'></div>
+        <div className={`${style['panel-highlight']} ${style['panel-header-shared']}`}>
+          <h3 className={style['cpe-panel-highlighted-header']}>HIGHLIGHTED TEXT</h3>
+          <p className={style['cpe-panel-highlighted-text']}>{highlightedText}</p>
+        </div>
+        <div className={`${style['panel-comments']} ${style['panel-header-shared']}`}>
+          <div className={style['panel-comments']}>
+            <h3 className={style['cpe-panel-highlighted-header']}>COMMENT SECTION</h3>
+            <div id='comments-container'></div>
+          </div>
+        </div>
       </div>
     );
   }
