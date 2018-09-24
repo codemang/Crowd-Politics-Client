@@ -10,6 +10,11 @@ class App extends Component {
   }
 
   componentDidMount() {
+    var link = document.createElement("link");
+    link.href = 'https://fonts.googleapis.com/css?family=Open+Sans';
+    link.rel = "stylesheet";
+    document.getElementsByTagName("head")[0].appendChild(link);
+
     var message = {
       type: 'load_highlights',
       url: window.location.host + window.location.pathname
