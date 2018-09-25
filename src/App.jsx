@@ -32,7 +32,6 @@ class App extends Component {
       url: window.location.host + window.location.pathname
     }
     chrome.runtime.sendMessage(message, function(response) {
-      console.log(response);
       if (response.response.highlights) {
         let highlights = {};
         response.response.highlights.forEach(function(highlight) {
@@ -56,9 +55,7 @@ class App extends Component {
     if (highlightedText) {
       newState.highlightedData = {highlightedText}
     }
-    console.log(newState)
     this.appendToState(newState);
-    // this.setState(Object.assign({}, this.state, {highlightedData: {highlightedText}, panelVisible: true}));
   }
 
 
@@ -73,7 +70,6 @@ class App extends Component {
       className: "cpe_highlight " + highlightClass,
       done: function() {
         $("."+highlightClass).on("click", function(elm) {
-          console.log("Clicked")
           reactRef.setState(Object.assign({}, this.state, {highlightedData: {highlightId}, panelVisible: true}))
         });
       }
@@ -123,7 +119,6 @@ class App extends Component {
     }
 
     if (this.state.highlightedData != prevState.highlightedData) {
-      console.log("rendering")
       $('#comments-container').comments({
         enablePinging: false,
         profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/public/defaults/user-icon.png',
@@ -143,7 +138,6 @@ class App extends Component {
             url: window.location.host + window.location.pathname,
             type: 'post_highlight',
           };
-          console.log(data);
 
           const chromeRef = this;
 
@@ -156,15 +150,15 @@ class App extends Component {
             // $('.cpe_overlay').remove();
           });
 
-          $.ajax({
-            type: 'post',
-            url: '/api/comments/',
-            data: commentJSON,
-            success: function(comment) {
-              success(comment)
-            },
-            error: error
-          });
+          // $.ajax({
+          //   type: 'post',
+          //   url: '/api/comments/',
+          //   data: commentJSON,
+          //   success: function(comment) {
+          //     success(comment)
+          //   },
+          //   error: error
+          // });
         }
       });
     }
