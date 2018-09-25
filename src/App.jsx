@@ -114,7 +114,14 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
+
     const reactRef = this;
+    if (this.state.errorMessage) {
+      $("input").keypress(function() {
+        reactRef.appendToState({errorMessage: null});
+      })
+    }
+
     if (this.state.highlightedData != prevState.highlightedData) {
       console.log("rendering")
       $('#comments-container').comments({
@@ -174,28 +181,24 @@ class App extends Component {
   signupClick(e) {
     const reactRef = this;
     e.preventDefault();
-    $.ajax({
-      type: "POST",
-      url: 'http://localhost:3000/users/extension_login',
-      data: {
-        user: {
-          email: $("#email-input").val(),
-          password: $("#password-input").val(),
-        },
-      }
-    })
-    .done(function(data) {
-      if (data.token) {
-        chrome.storage.sync.set({apiToken: data.token});
-        reactRef.appendToState({apiToken: data.token});
-      }
-    })
-    .fail(function(data) {
-      if (data.status === 401) {
+
+    var message = {
+      type: 'login',
+      user: {
+        email: $("#email-input").val(),
+        password: $("#password-input").val(),
+      },
+    };
+
+    chrome.runtime.sendMessage(message, function(response) {
+      if (response.apiToken) {
+        reactRef.appendToState({apiToken: response.apiToken});
+      } else if (response.status === 401) {
         reactRef.appendToState({errorMessage: 'Your email or password was incorrect.'});
       } else {
+        reactRef.appendToState({errorMessage: 'A problem occurred while logging you in. Please try again later.'});
       }
-    })
+    });
   }
 
   renderSignup() {
@@ -219,10 +222,10 @@ class App extends Component {
             <label for="exampleInputPassword1">Password</label>
             <input type="password" class="form-control" id="password-input" placeholder="Password" />
           </div>
-          <div class="alert alert-danger hidden incorrect-cred-alert"></div>
+          {this.state.errorMessage && <div class="alert alert-danger incorrect-cred-alert">{this.state.errorMessage}</div>}
           <button type="submit" class="btn btn-primary signup-btn" onClick={this.signupClick.bind(this)}>Submit</button>
         </form>
-        <p>If you don't have an account, <a href='http://localhost:3000/users/sign_up'>Signup</a> here.</p>
+        <p>If you don't have an account, <a target="_blank" href='http://localhost:3000/users/sign_up'>Signup</a> here.</p>
       </div>
     );
   }
