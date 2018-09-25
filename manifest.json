@@ -4,7 +4,8 @@
   "description": "Build an Extension!",
   "manifest_version": 2,
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "storage"
    ],
    "background": {
     "scripts": ["vendor-js/jquery.js", "background.js"],
@@ -15,7 +16,8 @@
        "matches": ["<all_urls>"],
        "css": [
          "vendor-css/jquery-comments.css",
-         "build/css/main.css"
+         "build/css/main.css",
+         "vendor-css/bootstrap.css"
        ],
        "js": [
          "vendor-js/jquery.js",

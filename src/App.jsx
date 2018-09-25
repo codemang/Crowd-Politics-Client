@@ -6,12 +6,24 @@ import HelloWorld from './components/hello-world';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { loadedApiToken: false };
   }
 
   componentDidMount() {
+
+    const reactRef = this;
+
+    chrome.storage.sync.get(['apiToken'], function(storage) {
+      reactRef.setState(Object.assign({}, this.state, {loadedApiToken: true}, storage));
+    });
+
     var link = document.createElement("link");
     link.href = 'https://fonts.googleapis.com/css?family=Open+Sans';
+    link.rel = "stylesheet";
+    document.getElementsByTagName("head")[0].appendChild(link);
+
+    link = document.createElement("link");
+    link.href = 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.cs://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css';
     link.rel = "stylesheet";
     document.getElementsByTagName("head")[0].appendChild(link);
 
@@ -19,7 +31,6 @@ class App extends Component {
       type: 'load_highlights',
       url: window.location.host + window.location.pathname
     }
-    const reactRef = this;
     chrome.runtime.sendMessage(message, function(response) {
       console.log(response);
       if (response.response.highlights) {
@@ -34,11 +45,22 @@ class App extends Component {
 
     $(document).bind('keypress', function(event) {
       if (event.which === 11 ) {
-        var highlightedText = window.getSelection(0).toString();
-        reactRef.setState(Object.assign({}, this.state, {highlightedData: {highlightedText}, panelVisible: true}))
+        reactRef.handleHotkey();
       }
     });
   }
+
+  handleHotkey() {
+    var highlightedText = window.getSelection(0).toString();
+    let newState = {panelVisible: true};
+    if (highlightedText) {
+      newState.highlightedData = {highlightedText}
+    }
+    console.log(newState)
+    this.appendToState(newState);
+    // this.setState(Object.assign({}, this.state, {highlightedData: {highlightedText}, panelVisible: true}));
+  }
+
 
   highlightText(text, highlightId) {
     var instance = new Mark(document.querySelector("body"));
@@ -91,17 +113,18 @@ class App extends Component {
     }
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
     const reactRef = this;
-    if (!this.state.panelVisible && this.state.panelVisible != nextState.panelVisible) {
+    if (this.state.highlightedData != prevState.highlightedData) {
+      console.log("rendering")
       $('#comments-container').comments({
         enablePinging: false,
         profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/public/defaults/user-icon.png',
         getComments: function(success, error) {
-          if (!nextState.highlightedData || !nextState.highlightedData.highlightId) {
+          if (!reactRef.state.highlightedData || !reactRef.state.highlightedData.highlightId) {
             success([]);
           } else {
-            const comments = nextState.highlights[nextState.highlightedData.highlightId].comments;
+            const comments = reactRef.state.highlights[reactRef.state.highlightedData.highlightId].comments;
             success(comments);
           }
         },
@@ -140,30 +163,78 @@ class App extends Component {
     }
   }
 
-  renderModal(highlightedObj) {
-  }
-
   closePanel() {
-    this.setState(Object.assign({}, this.state, {panelVisible: false}))
+    this.setState(Object.assign({}, this.state, {panelVisible: false, highlightedData: null}))
   }
 
-  render() {
-    let classes = style['cpe-sidebar'];
-    if (this.state.panelVisible) {
-      classes += " " + style['cpe-sidebar-visible'];
-    }
+  appendToState(obj) {
+    this.setState(Object.assign({}, this.state, obj));
+  }
 
+  signupClick(e) {
+    const reactRef = this;
+    e.preventDefault();
+    $.ajax({
+      type: "POST",
+      url: 'http://localhost:3000/users/extension_login',
+      data: {
+        user: {
+          email: $("#email-input").val(),
+          password: $("#password-input").val(),
+        },
+      }
+    })
+    .done(function(data) {
+      if (data.token) {
+        chrome.storage.sync.set({apiToken: data.token});
+        reactRef.appendToState({apiToken: data.token});
+      }
+    })
+    .fail(function(data) {
+      if (data.status === 401) {
+        reactRef.appendToState({errorMessage: 'Your email or password was incorrect.'});
+      } else {
+      }
+    })
+  }
+
+  renderSignup() {
+    if (this.state.apiToken) {
+      return (
+        <div className={style['panel-header-shared']}>
+          <h3>You are logged in!</h3>
+        </div>
+      )
+    }
+    return (
+      <div class='signup-form' className={style['panel-header-shared']}>
+        <h3>You have to login to view this page.</h3>
+        <form>
+          <div class="form-group">
+            <label for="exampleInputEmail1">Email address</label>
+            <input type="email" class="form-control" id="email-input" aria-describedby="emailHelp" placeholder="Enter email" />
+            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword1">Password</label>
+            <input type="password" class="form-control" id="password-input" placeholder="Password" />
+          </div>
+          <div class="alert alert-danger hidden incorrect-cred-alert"></div>
+          <button type="submit" class="btn btn-primary signup-btn" onClick={this.signupClick.bind(this)}>Submit</button>
+        </form>
+        <p>If you don't have an account, <a href='http://localhost:3000/users/sign_up'>Signup</a> here.</p>
+      </div>
+    );
+  }
+
+  renderComments() {
     let highlightedText;
     if (this.state.highlightedData) {
       highlightedText = this.state.highlightedData.highlightedText || this.state.highlights[this.state.highlightedData.highlightId].body;
     }
 
     return (
-      <div id={style['cpe-modal-container']} className={classes}>
-        <div className={`${style['panel-header']} ${style['panel-header-shared']}`}>
-          <p className={style['panel-header-brand']}>PolitiCrew</p>
-          <a className={style['panel-header-close']} onClick={this.closePanel.bind(this)}>Close</a>
-        </div>
+      <div>
         <div className={`${style['panel-highlight']} ${style['panel-header-shared']}`}>
           <h3 className={style['cpe-panel-highlighted-header']}>HIGHLIGHTED TEXT</h3>
           <p className={style['cpe-panel-highlighted-text']}>{highlightedText}</p>
@@ -174,6 +245,37 @@ class App extends Component {
             <div id='comments-container'></div>
           </div>
         </div>
+      </div>
+    );
+  }
+
+  renderTips() {
+    return <div>Tips</div>
+  }
+
+  render() {
+
+    let classes = style['cpe-sidebar'];
+    if (this.state.panelVisible) {
+      classes += " " + style['cpe-sidebar-visible'];
+    }
+
+    let content;
+    if (!this.state.apiToken) {
+      content = this.renderSignup();
+    } else if (this.state.highlightedData) {
+      content = this.renderComments();
+    } else {
+      content = this.renderTips();
+    }
+
+    return (
+      <div id={style['cpe-modal-container']} className={classes}>
+        <div className={`${style['panel-header']} ${style['panel-header-shared']}`}>
+          <p className={style['panel-header-brand']}>PolitiCrew</p>
+          <a className={style['panel-header-close']} onClick={this.closePanel.bind(this)}>Close</a>
+        </div>
+        {content}
       </div>
     );
   }
