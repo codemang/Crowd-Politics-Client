@@ -32,14 +32,14 @@ class App extends Component {
       url: window.location.host + window.location.pathname
     }
     chrome.runtime.sendMessage(message, function(response) {
-      if (response.response.highlights) {
-        let highlights = {};
-        response.response.highlights.forEach(function(highlight) {
+      let highlights = {};
+      if (response.highlights) {
+        response.highlights.forEach(function(highlight) {
           highlights[highlight.id] = highlight;
           reactRef.highlightText(highlight.body, highlight.id)
         });
-        reactRef.setState({highlights: highlights});
       }
+      reactRef.setState({highlights: highlights});
     });
 
     $(document).bind('keypress', function(event) {
@@ -68,6 +68,7 @@ class App extends Component {
       separateWordSearch: false,
       acrossElements: true,
       className: "cpe_highlight " + highlightClass,
+      exclude: ['#cpe-highlighted-text'],
       done: function() {
         $("."+highlightClass).on("click", function(elm) {
           reactRef.setState(Object.assign({}, this.state, {highlightedData: {highlightId}, panelVisible: true}))
@@ -141,24 +142,15 @@ class App extends Component {
 
           const chromeRef = this;
 
-          chrome.runtime.sendMessage(data, comment => {
-            success(comment.response)
-            // TODO: Where is this response key coming from?
-            // highlight = highlight.response;
-            // globalHighlights[highlight.id] = highlight;
-            // highlightText(highlightedText, highlight.id);
-            // $('.cpe_overlay').remove();
+          chrome.runtime.sendMessage(data, response => {
+            const highlights = jQuery.extend(true, {}, reactRef.state.highlights);
+            highlights[response.highlight.id] = response.highlight;
+            if (!reactRef.state.highlights[response.highlight.id]) {
+              reactRef.highlightText(response.highlight.body, response.highlight.id);
+            }
+            reactRef.appendToState({highlights: highlights});
+            success(response.comment)
           });
-
-          // $.ajax({
-          //   type: 'post',
-          //   url: '/api/comments/',
-          //   data: commentJSON,
-          //   success: function(comment) {
-          //     success(comment)
-          //   },
-          //   error: error
-          // });
         }
       });
     }
@@ -234,7 +226,7 @@ class App extends Component {
       <div>
         <div className={`${style['panel-highlight']} ${style['panel-header-shared']}`}>
           <h3 className={style['cpe-panel-highlighted-header']}>HIGHLIGHTED TEXT</h3>
-          <p className={style['cpe-panel-highlighted-text']}>{highlightedText}</p>
+          <p id='cpe-highlighted-text' className={style['cpe-panel-highlighted-text']}>{highlightedText}</p>
         </div>
         <div className={`${style['panel-comments']} ${style['panel-header-shared']}`}>
           <div className={style['panel-comments']}>

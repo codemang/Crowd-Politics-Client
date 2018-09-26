@@ -14,7 +14,7 @@ chrome.runtime.onMessage.addListener(
           }
         })
         .done(function(data) {
-          sendResponse({response: data.comment})
+          sendResponse(data)
         })
         .fail(function() {
           console.log( "error!!!" );
@@ -33,8 +33,7 @@ chrome.runtime.onMessage.addListener(
           }
         })
         .done(function(data) {
-          console.log(data)
-          sendResponse({response: data.response})
+          sendResponse(data.response)
         })
         .fail(function() {
           console.log( "error!!!" );
