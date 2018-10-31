@@ -10,40 +10,39 @@ class App extends Component {
   }
 
   componentDidMount() {
+    console.log('Component mounted');
 
     const reactRef = this;
 
     chrome.storage.sync.get(['apiToken'], function(storage) {
-      reactRef.setState(Object.assign({}, this.state, {loadedApiToken: true}, storage));
+      reactRef.setState(
+        Object.assign({}, this.state, { loadedApiToken: true }, storage),
+      );
     });
 
-    var link = document.createElement("link");
+    var link = document.createElement('link');
     link.href = 'https://fonts.googleapis.com/css?family=Open+Sans';
-    link.rel = "stylesheet";
-    document.getElementsByTagName("head")[0].appendChild(link);
-
-    link = document.createElement("link");
-    link.href = 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.cs://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css';
-    link.rel = "stylesheet";
-    document.getElementsByTagName("head")[0].appendChild(link);
+    link.rel = 'stylesheet';
+    document.getElementsByTagName('head')[0].appendChild(link);
 
     var message = {
       type: 'load_highlights',
-      url: window.location.host + window.location.pathname
-    }
+      url: window.location.host + window.location.pathname,
+    };
     chrome.runtime.sendMessage(message, function(response) {
+      console.log(response);
       let highlights = {};
       if (response.highlights) {
         response.highlights.forEach(function(highlight) {
           highlights[highlight.id] = highlight;
-          reactRef.highlightText(highlight.body, highlight.id)
+          reactRef.highlightText(highlight.body, highlight.id);
         });
       }
-      reactRef.setState({highlights: highlights});
+      reactRef.setState({ highlights: highlights });
     });
 
     $(document).bind('keypress', function(event) {
-      if (event.which === 11 ) {
+      if (event.which === 11) {
         reactRef.handleHotkey();
       }
     });
@@ -51,29 +50,33 @@ class App extends Component {
 
   handleHotkey() {
     var highlightedText = window.getSelection(0).toString();
-    let newState = {panelVisible: true};
+    let newState = { panelVisible: true };
     if (highlightedText) {
-      newState.highlightedData = {highlightedText}
+      newState.highlightedData = { highlightedText };
     }
     this.appendToState(newState);
   }
 
-
   highlightText(text, highlightId) {
-    var instance = new Mark(document.querySelector("body"));
+    var instance = new Mark(document.querySelector('body'));
     var highlightClass = 'cpe_highlight_' + highlightId;
     const reactRef = this;
 
-    $("body").mark(text, {
+    $('body').mark(text, {
       separateWordSearch: false,
       acrossElements: true,
-      className: "cpe_highlight " + highlightClass,
+      className: 'cpe_highlight ' + highlightClass,
       exclude: ['#cpe-highlighted-text'],
       done: function() {
-        $("."+highlightClass).on("click", function(elm) {
-          reactRef.setState(Object.assign({}, this.state, {highlightedData: {highlightId}, panelVisible: true}))
+        $('.' + highlightClass).on('click', function(elm) {
+          reactRef.setState(
+            Object.assign({}, this.state, {
+              highlightedData: { highlightId },
+              panelVisible: true,
+            }),
+          );
         });
-      }
+      },
     });
   }
 
@@ -111,23 +114,29 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-
     const reactRef = this;
     if (this.state.errorMessage) {
-      $("input").keypress(function() {
-        reactRef.appendToState({errorMessage: null});
-      })
+      $('input').keypress(function() {
+        reactRef.appendToState({ errorMessage: null });
+      });
     }
 
     if (this.state.highlightedData != prevState.highlightedData) {
       $('#comments-container').comments({
         enablePinging: false,
-        profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/public/defaults/user-icon.png',
+        profilePictureURL:
+          'https://viima-app.s3.amazonaws.com/media/public/defaults/user-icon.png',
         getComments: function(success, error) {
-          if (!reactRef.state.highlightedData || !reactRef.state.highlightedData.highlightId) {
+          if (
+            !reactRef.state.highlightedData ||
+            !reactRef.state.highlightedData.highlightId
+          ) {
             success([]);
           } else {
-            const comments = reactRef.state.highlights[reactRef.state.highlightedData.highlightId].comments;
+            const comments =
+              reactRef.state.highlights[
+                reactRef.state.highlightedData.highlightId
+              ].comments;
             success(comments);
           }
         },
@@ -143,21 +152,33 @@ class App extends Component {
           const chromeRef = this;
 
           chrome.runtime.sendMessage(data, response => {
-            const highlights = jQuery.extend(true, {}, reactRef.state.highlights);
+            const highlights = jQuery.extend(
+              true,
+              {},
+              reactRef.state.highlights,
+            );
             highlights[response.highlight.id] = response.highlight;
             if (!reactRef.state.highlights[response.highlight.id]) {
-              reactRef.highlightText(response.highlight.body, response.highlight.id);
+              reactRef.highlightText(
+                response.highlight.body,
+                response.highlight.id,
+              );
             }
-            reactRef.appendToState({highlights: highlights});
-            success(response.comment)
+            reactRef.appendToState({ highlights: highlights });
+            success(response.comment);
           });
-        }
+        },
       });
     }
   }
 
   closePanel() {
-    this.setState(Object.assign({}, this.state, {panelVisible: false, highlightedData: null}))
+    this.setState(
+      Object.assign({}, this.state, {
+        panelVisible: false,
+        highlightedData: null,
+      }),
+    );
   }
 
   appendToState(obj) {
@@ -171,18 +192,23 @@ class App extends Component {
     var message = {
       type: 'login',
       user: {
-        email: $("#email-input").val(),
-        password: $("#password-input").val(),
+        email: $('#email-input').val(),
+        password: $('#password-input').val(),
       },
     };
 
     chrome.runtime.sendMessage(message, function(response) {
       if (response.apiToken) {
-        reactRef.appendToState({apiToken: response.apiToken});
+        reactRef.appendToState({ apiToken: response.apiToken });
       } else if (response.status === 401) {
-        reactRef.appendToState({errorMessage: 'Your email or password was incorrect.'});
+        reactRef.appendToState({
+          errorMessage: 'Your email or password was incorrect.',
+        });
       } else {
-        reactRef.appendToState({errorMessage: 'A problem occurred while logging you in. Please try again later.'});
+        reactRef.appendToState({
+          errorMessage:
+            'A problem occurred while logging you in. Please try again later.',
+        });
       }
     });
   }
@@ -193,25 +219,54 @@ class App extends Component {
         <div className={style['panel-header-shared']}>
           <h3>You are logged in!</h3>
         </div>
-      )
+      );
     }
     return (
-      <div class='signup-form' className={style['panel-header-shared']}>
+      <div
+        className={`${style['panel-header-shared']} ${style['signup-form']}`}
+      >
         <h3>You have to login to view this page.</h3>
         <form>
-          <div class="form-group">
+          <div className={style['form-group']}>
             <label for="exampleInputEmail1">Email address</label>
-            <input type="email" class="form-control" id="email-input" aria-describedby="emailHelp" placeholder="Enter email" />
-            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            <input
+              type="email"
+              class="form-control"
+              id="email-input"
+              aria-describedby="emailHelp"
+              placeholder="Enter email"
+            />
+            <small id="emailHelp" className={style['text-muted']}>
+              We'll never share your email with anyone else.
+            </small>
           </div>
-          <div class="form-group">
+          <div className={style['form-group']}>
             <label for="exampleInputPassword1">Password</label>
-            <input type="password" class="form-control" id="password-input" placeholder="Password" />
+            <input
+              type="password"
+              class="form-control"
+              id="password-input"
+              placeholder="Password"
+            />
           </div>
-          {this.state.errorMessage && <div class="alert alert-danger incorrect-cred-alert">{this.state.errorMessage}</div>}
-          <button type="submit" class="btn btn-primary signup-btn" onClick={this.signupClick.bind(this)}>Submit</button>
+          {this.state.errorMessage && (
+            <div className={style['alert']}>{this.state.errorMessage}</div>
+          )}
+          <button
+            type="submit"
+            class="btn btn-primary signup-btn"
+            onClick={this.signupClick.bind(this)}
+          >
+            Submit
+          </button>
         </form>
-        <p>If you don't have an account, <a target="_blank" href='http://localhost:3000/users/sign_up'>Signup</a> here.</p>
+        <p className={style['signup-p']}>
+          If you don't have an account,{' '}
+          <a target="_blank" href="http://localhost:3000/users/sign_up">
+            Signup
+          </a>{' '}
+          here.
+        </p>
       </div>
     );
   }
@@ -219,19 +274,38 @@ class App extends Component {
   renderComments() {
     let highlightedText;
     if (this.state.highlightedData) {
-      highlightedText = this.state.highlightedData.highlightedText || this.state.highlights[this.state.highlightedData.highlightId].body;
+      highlightedText =
+        this.state.highlightedData.highlightedText ||
+        this.state.highlights[this.state.highlightedData.highlightId].body;
     }
 
     return (
       <div>
-        <div className={`${style['panel-highlight']} ${style['panel-header-shared']}`}>
-          <h3 className={style['cpe-panel-highlighted-header']}>HIGHLIGHTED TEXT</h3>
-          <p id='cpe-highlighted-text' className={style['cpe-panel-highlighted-text']}>{highlightedText}</p>
+        <div
+          className={`${style['panel-highlight']} ${
+            style['panel-header-shared']
+          }`}
+        >
+          <h3 className={style['cpe-panel-highlighted-header']}>
+            HIGHLIGHTED TEXT
+          </h3>
+          <p
+            id="cpe-highlighted-text"
+            className={style['cpe-panel-highlighted-text']}
+          >
+            {highlightedText}
+          </p>
         </div>
-        <div className={`${style['panel-comments']} ${style['panel-header-shared']}`}>
+        <div
+          className={`${style['panel-comments']} ${
+            style['panel-header-shared']
+          }`}
+        >
           <div className={style['panel-comments']}>
-            <h3 className={style['cpe-panel-highlighted-header']}>COMMENT SECTION</h3>
-            <div id='comments-container'></div>
+            <h3 className={style['cpe-panel-highlighted-header']}>
+              COMMENT SECTION
+            </h3>
+            <div id="comments-container" />
           </div>
         </div>
       </div>
@@ -239,14 +313,13 @@ class App extends Component {
   }
 
   renderTips() {
-    return <div>Tips</div>
+    return <div>Tips</div>;
   }
 
   render() {
-
     let classes = style['cpe-sidebar'];
     if (this.state.panelVisible) {
-      classes += " " + style['cpe-sidebar-visible'];
+      classes += ' ' + style['cpe-sidebar-visible'];
     }
 
     let content;
@@ -260,15 +333,21 @@ class App extends Component {
 
     return (
       <div id={style['cpe-modal-container']} className={classes}>
-        <div className={`${style['panel-header']} ${style['panel-header-shared']}`}>
+        <div
+          className={`${style['panel-header']} ${style['panel-header-shared']}`}
+        >
           <p className={style['panel-header-brand']}>PolitiCrew</p>
-          <a className={style['panel-header-close']} onClick={this.closePanel.bind(this)}>Close</a>
+          <a
+            className={style['panel-header-close']}
+            onClick={this.closePanel.bind(this)}
+          >
+            Close
+          </a>
         </div>
         {content}
       </div>
     );
   }
 }
-
 
 export default hot(module)(App);
