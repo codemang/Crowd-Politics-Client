@@ -132,7 +132,8 @@ class App extends Component {
       });
     }
 
-    if (this.state.highlightedData != prevState.highlightedData) {
+    const newLogin = prevState.apiToken === null && prevState.apiToken !== this.state.apiToken;
+    if (this.state.highlightedData != prevState.highlightedData || newLogin) {
       $('#comments-container').comments({
         enablePinging: false,
         profilePictureURL:
