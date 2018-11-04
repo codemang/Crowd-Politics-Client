@@ -180,6 +180,18 @@ class App extends Component {
             success(response.comment);
           });
         },
+        upvoteComment: function(commentJSON, success, error) {
+          const data = {
+            comment_id: commentJSON['id'],
+            type: 'upvote',
+          };
+
+          const chromeRef = this;
+          chrome.runtime.sendMessage(data, response => {
+            console.log(response.comment)
+            success(response.comment);
+          })
+        }
       });
     }
   }
