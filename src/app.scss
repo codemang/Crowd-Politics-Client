@@ -22,6 +22,7 @@
   -moz-box-sizing: border-box;    /* Firefox, other Gecko */
   box-sizing: border-box;         /* Opera/IE 8+ */
 
+
   * {
     color: black;
     font-family: Arial;
@@ -70,6 +71,14 @@
   }
 }
 
+.sticky-footer {
+  position: fixed;
+  background: rgb(38, 50, 56);
+  bottom: 0;
+  transition: right 0.3s;
+  width: 500px;
+  right: -500px;
+}
 
 .cpe-sidebar-visible {
   right: 0;
@@ -146,12 +155,6 @@ mark:hover, .cpe_highlight:hover {
   color: white;
   cursor: pointer;
 }
-.sticky-footer {
-  position: absolute;
-  background: rgb(38, 50, 56);
-  bottom: 0;
-  width: 500px;
-}
 .logout-btn {
   display: inline-block;
   color: white;
@@ -169,4 +172,10 @@ mark:hover, .cpe_highlight:hover {
 }
 .multi-highlight-container {
   padding: 10px;
+}
+.sticky-footer-invisible {
+  display: none;
+}
+.comments-footer-offset {
+  height: 25px;
 }

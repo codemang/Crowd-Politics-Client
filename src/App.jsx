@@ -337,11 +337,7 @@ class App extends Component {
             {highlightedText}
           </p>
         </div>
-        <div
-          className={`${style['panel-comments']} ${
-            style['panel-header-shared']
-          }`}
-        >
+        <div className={`${style['panel-comments']} ${style['panel-header-shared']}`} >
           <div className={style['panel-comments']}>
             <h3 className={style['cpe-panel-highlighted-header']}>
               COMMENT SECTION
@@ -349,11 +345,7 @@ class App extends Component {
             <div id="comments-container" />
           </div>
         </div>
-        <div className={style['sticky-footer']}>
-          <div className={style['logout-btn']} onClick={this.logout.bind(this)}>
-            Logout
-          </div>
-        </div>
+        <div className={style['comments-footer-offset']}></div>
       </div>
     );
   }
@@ -384,14 +376,18 @@ class App extends Component {
   }
 
   render() {
-    let classes = style['cpe-sidebar'];
+    let containerClasses = style['cpe-sidebar'];
+    let footerClasses = style['sticky-footer'];
     if (this.state.panelVisible) {
-      classes += ' ' + style['cpe-sidebar-visible'];
+      containerClasses += ' ' + style['cpe-sidebar-visible'];
+      footerClasses += ' ' + style['cpe-sidebar-visible'];
     }
+
 
     let content;
     if (!this.state.apiToken) {
       content = this.renderSignup();
+      footerClasses += ' ' + style['sticky-footer-invisible'];
     } else if (this.state.highlightedData) {
       content = this.renderComments();
     } else {
@@ -399,11 +395,11 @@ class App extends Component {
     }
 
     return (
-      <div id={style['cpe-modal-container']} className={classes}>
+      <div id={style['cpe-modal-container']} className={containerClasses}>
         <div
           className={`${style['panel-header']} ${style['panel-header-shared']}`}
         >
-          <p className={style['panel-header-brand']}>PolitiCrew</p>
+          <p className={style['panel-header-brand']}>CrowdChecked</p>
           <a
             className={style['panel-header-close']}
             onClick={this.closePanel.bind(this)}
@@ -412,6 +408,11 @@ class App extends Component {
           </a>
         </div>
         {content}
+        <div className={footerClasses}>
+          <div className={style['logout-btn']} onClick={this.logout.bind(this)}>
+            Logout
+          </div>
+        </div>
       </div>
     );
   }
