@@ -82,6 +82,12 @@
   border-radius: 5px;
   padding: 8px;
 }
+.multi-cpe-panel-highlighted-text {
+  margin: 10px 0;
+}
+.multi-cpe-panel-highlighted-text:hover {
+  cursor: pointer;
+}
 .cpe-panel-highlighted-header {
   font-size: 21px;
   font-weight: 700;
@@ -160,4 +166,7 @@ mark:hover, .cpe_highlight:hover {
 
 .logout-btn:hover {
   cursor: pointer;
+}
+.multi-highlight-container {
+  padding: 10px;
 }

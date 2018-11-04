@@ -67,15 +67,19 @@ class App extends Component {
       exclude: ['#cpe-highlighted-text'],
       done: function() {
         $('.' + highlightClass).on('click', function(elm) {
-          reactRef.setState(
-            Object.assign({}, this.state, {
-              highlightedData: { highlightId },
-              panelVisible: true,
-            }),
-          );
+          reactRef.renderHighlight(highlightId);
         });
       },
     });
+  }
+
+  renderHighlight(highlightId) {
+    this.setState(
+      Object.assign({}, this.state, {
+        highlightedData: { highlightId },
+        panelVisible: true,
+      }),
+    );
   }
 
   getArticleTitle() {
@@ -133,6 +137,19 @@ class App extends Component {
     }
 
     const newLogin = prevState.apiToken === null && prevState.apiToken !== this.state.apiToken;
+    const highlightsInitialLoad = this.state.highlights && !prevState.highlights;
+    const panelClosed = !this.state.panelVisible && this.state.panelVisible !== prevState.panelVisible;
+
+    // Showing all highlights on the page
+    if (highlightsInitialLoad || panelClosed) {
+      $(`.${style['multi-cpe-panel-highlighted-text']}`).each(function(index, elm) {
+        $(elm).on("click", function() {
+          const highlightId = $(elm).attr('id').split("-")[1];
+          reactRef.renderHighlight(highlightId);
+        });
+      });
+    }
+
     if (this.state.highlightedData != prevState.highlightedData || newLogin) {
       $('#comments-container').comments({
         enablePinging: false,
@@ -341,8 +358,29 @@ class App extends Component {
     );
   }
 
-  renderTips() {
-    return <div>Tips</div>;
+  renderHighlightsOverview() {
+    let content = []
+
+    // on page load before highlights have loaded
+    if (!this.state.highlights) {
+      return null;
+    }
+    for (const key in this.state.highlights) {
+      const highlight = this.state.highlights[key];
+      content.push(
+        <div id={`highlight-${highlight.id}`} className={`${style['multi-cpe-panel-highlighted-text']} ${style['cpe-panel-highlighted-text']}`}>
+          {highlight.body}
+        </div>
+      )
+    };
+    return (
+      <div className={style['multi-highlight-container']}>
+        <h3 className={style['cpe-panel-highlighted-header']}>
+          HIGHLIGHTS ON THIS PAGE
+        </h3>
+        {content}
+      </div>
+      );
   }
 
   render() {
@@ -357,7 +395,7 @@ class App extends Component {
     } else if (this.state.highlightedData) {
       content = this.renderComments();
     } else {
-      content = this.renderTips();
+      content = this.renderHighlightsOverview();
     }
 
     return (
