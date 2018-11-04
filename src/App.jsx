@@ -15,9 +15,7 @@ class App extends Component {
     const reactRef = this;
 
     chrome.storage.sync.get(['apiToken'], function(storage) {
-      reactRef.setState(
-        Object.assign({}, this.state, { loadedApiToken: true }, storage),
-      );
+      reactRef.trackApiTokenLoaded(storage);
     });
 
     var link = document.createElement('link');
@@ -111,6 +109,19 @@ class App extends Component {
         .text()
         .trim();
     }
+  }
+
+  logout() {
+    const reactRef = this;
+    chrome.runtime.sendMessage({type: 'logout'}, function(storage) {
+      reactRef.trackApiTokenLoaded(storage);
+    });
+  }
+
+  trackApiTokenLoaded(storage) {
+    this.setState(
+      Object.assign({}, this.state, { loadedApiToken: true }, storage),
+    );
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -306,6 +317,11 @@ class App extends Component {
               COMMENT SECTION
             </h3>
             <div id="comments-container" />
+          </div>
+        </div>
+        <div className={style['sticky-footer']}>
+          <div className={style['logout-btn']} onClick={this.logout.bind(this)}>
+            Logout
           </div>
         </div>
       </div>

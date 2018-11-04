@@ -55,6 +55,9 @@ chrome.runtime.onMessage.addListener(function(data, sender, sendResponse) {
         .fail(function(data) {
           sendResponse(data);
         });
+    } else if (data.type === 'logout') {
+      chrome.storage.sync.set({ apiToken: null });
+      sendResponse({ apiToken: null});
     }
   });
   return true;

@@ -140,3 +140,24 @@ mark:hover, .cpe_highlight:hover {
   color: white;
   cursor: pointer;
 }
+.sticky-footer {
+  position: absolute;
+  background: rgb(38, 50, 56);
+  bottom: 0;
+  width: 500px;
+}
+.logout-btn {
+  display: inline-block;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 3px;
+  background: #FF5722;
+  margin: 3px;
+  font-size: 14px;
+  float: right;
+  margin: 5px;
+}
+
+.logout-btn:hover {
+  cursor: pointer;
+}
