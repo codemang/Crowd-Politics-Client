@@ -1,11 +1,11 @@
 chrome.runtime.onMessage.addListener(function(data, sender, sendResponse) {
   chrome.storage.sync.get(['apiToken'], function(storage) {
-    var backend = 'localhost:3000';
+    var backend = 'http://localhost:3000';
 
     if (data.type === 'post_highlight') {
       $.ajax({
         type: 'POST',
-        url: 'http://' + backend + '/api/highlights',
+        url: backend + '/api/highlights',
         data: data,
         headers: {
           Authorization: 'Token token=' + storage.apiToken,
@@ -24,7 +24,7 @@ chrome.runtime.onMessage.addListener(function(data, sender, sendResponse) {
       console.log('Loading highlights');
       $.ajax({
         type: 'GET',
-        url: 'http://' + backend + '/api/highlights',
+        url: backend + '/api/highlights',
         data: data,
         headers: {
           Authorization: 'Token token=' + storage.apiToken,
@@ -42,7 +42,7 @@ chrome.runtime.onMessage.addListener(function(data, sender, sendResponse) {
     } else if (data.type === 'login') {
       $.ajax({
         type: 'POST',
-        url: 'http://localhost:3000/users/extension_login',
+        url: backend + '/users/extension_login',
         data: data,
       })
       .done(function(data) {
@@ -61,7 +61,7 @@ chrome.runtime.onMessage.addListener(function(data, sender, sendResponse) {
     } else if (data.type === 'upvote') {
       $.ajax({
         type: 'POST',
-        url: 'http://' + backend + '/api/comment_votes',
+        url: backend + '/api/comment_votes',
         data: data,
         headers: {
           Authorization: 'Token token=' + storage.apiToken,
