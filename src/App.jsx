@@ -303,7 +303,7 @@ class App extends Component {
         </form>
         <p className={style['signup-p']}>
           If you don't have an account,{' '}
-          <a target="_blank" href="http://localhost:3000/users/sign_up">
+          <a target="_blank" href="http://crowdchecked.test:3002/users/sign_up">
             Signup
           </a>{' '}
           here.

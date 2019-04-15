@@ -1,6 +1,6 @@
 chrome.runtime.onMessage.addListener(function(data, sender, sendResponse) {
   chrome.storage.sync.get(['apiToken'], function(storage) {
-    var backend = 'http://localhost:3000';
+    var backend = 'http://crowdchecked.test:3002';
 
     if (data.type === 'post_highlight') {
       $.ajax({
